@@ -27,6 +27,9 @@
 
 #include <bits/c++config.h>
 #include <cstdlib>
+#ifdef __QNXNTO__
+#include <cstddef>
+#endif
 #if _GLIBCXX_HOSTED
 #include <cstring>
 #endif

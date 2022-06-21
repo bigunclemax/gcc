@@ -39,6 +39,9 @@
 #pragma GCC system_header
 
 #include <bits/c++config.h>
+#ifdef __QNXNTO__
+typedef __SIZE_TYPE__  size_t;
+#endif
 #include <time.h>
 
 #ifndef _GLIBCXX_CTIME

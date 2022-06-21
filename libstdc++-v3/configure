@@ -29274,7 +29274,7 @@ case "${host}" in
     # This is a freestanding configuration; there is nothing to do here.
     ;;
 
-  avr*-*-*)
+  avr*-*-* | *-*-nto-*)
     $as_echo "#define HAVE_ACOSF 1" >>confdefs.h
 
     $as_echo "#define HAVE_ASINF 1" >>confdefs.h

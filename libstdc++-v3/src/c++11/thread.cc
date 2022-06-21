@@ -71,6 +71,9 @@ static inline int get_nprocs()
 # define _GLIBCXX_NPROCS 0
 #endif
 
+#if defined(__QNXNTO__)
+#  include <unistd.h>
+#endif
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   extern "C"

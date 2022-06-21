@@ -49,6 +49,9 @@
 #include <bits/c++config.h>
 #include <bits/cxxabi_tweaks.h>
 #include <bits/cxxabi_forced.h>
+#ifdef __QNXNTO__
+#include <cstddef>
+#endif
 #include <bits/cxxabi_init_exception.h>
 
 #ifdef __cplusplus
@@ -215,6 +218,10 @@ namespace __cxxabiv1
 
 namespace __cxxabiv1
 {
+#ifdef __QNXNTO__
+  using  std::ptrdiff_t;
+#endif
+
   // Type information for int, float etc.
   class __fundamental_type_info : public std::type_info
   {

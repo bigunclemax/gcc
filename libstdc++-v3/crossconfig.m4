@@ -226,10 +226,12 @@ case "${host}" in
     AC_CHECK_FUNCS(timespec_get)
     AC_CHECK_FUNCS(sockatmark)
     ;;
-  *-qnx6.1* | *-qnx6.2*)
+  *-qnx*)
     SECTION_FLAGS='-ffunction-sections -fdata-sections'
     AC_SUBST(SECTION_FLAGS) 
     GLIBCXX_CHECK_LINKER_FEATURES
+    GLIBCXX_CHECK_STDLIB_SUPPORT
+    GLIBCXX_CHECK_MATH_SUPPORT
     AC_DEFINE(HAVE_COSF)
     AC_DEFINE(HAVE_COSL)
     AC_DEFINE(HAVE_COSHF)
@@ -242,6 +244,7 @@ case "${host}" in
     AC_DEFINE(HAVE_SINL)
     AC_DEFINE(HAVE_SINHF)
     AC_DEFINE(HAVE_SINHL)
+    AC_DEFINE(_GLIBCXX_USE_RANDOM_TR1)
     ;;
   *-rtems*)
     GLIBCXX_CHECK_COMPILER_FEATURES
