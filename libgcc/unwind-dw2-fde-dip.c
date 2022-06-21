@@ -32,7 +32,7 @@
 
 #include "tconfig.h"
 #include "tsystem.h"
-#if !defined(inhibit_libc) && !defined(__OpenBSD__)
+#if !defined(inhibit_libc) && !defined(__OpenBSD__) && !defined(__QNXNTO__)
 #include <elf.h>		/* Get DT_CONFIG.  */
 #endif
 #include "coretypes.h"

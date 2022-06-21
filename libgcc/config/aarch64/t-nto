@@ -1,3 +1,2 @@
-HOST_LIBGCC2_CFLAGS += -fexceptions
-
 CRTSTUFF_T_CFLAGS = -fno-omit-frame-pointer $(PICFLAG) -DCRTSTUFFS_O
+SHLIB_LDFLAGS = -Wl,--soname=$(SHLIB_SONAME)
