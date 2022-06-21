@@ -1,0 +1,7 @@
+T_CPPFLAGS=-DTARGET_ALIAS=\"$(target_alias)\"
+
+MULTILIB_OPTIONS = fpic
+MULTILIB_DIRNAMES = pic
+MULTILIB_MATCHES += fpic=fPIC
+MULTILIB_MATCHES += fpic=shared
+MULTILIB_MATCHES += fpic=pie
