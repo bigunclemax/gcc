@@ -36,6 +36,9 @@ POSSIBILITY OF SUCH DAMAGE.  */
 #include <sys/stat.h>
 #include <errno.h>
 #include <fcntl.h>
+#ifdef __QNXNTO__
+#include <wchar.h>
+#endif
 #include <stdlib.h>
 #include <unistd.h>
 
