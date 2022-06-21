@@ -26,7 +26,8 @@
 // There is no general interception at all on Fuchsia and RTEMS.
 // Only the functions in asan_interceptors_memintrinsics.cpp are
 // really defined to replace libc functions.
-#if !SANITIZER_FUCHSIA && !SANITIZER_RTEMS
+// No asan for QNX yet..
+#if !SANITIZER_FUCHSIA && !SANITIZER_RTEMS && !SANITIZER_QNX
 
 #if SANITIZER_POSIX
 #include "sanitizer_common/sanitizer_posix.h"

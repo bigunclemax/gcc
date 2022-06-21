@@ -14,7 +14,7 @@
 #include "sanitizer_platform.h"
 
 #if SANITIZER_FREEBSD || SANITIZER_LINUX || SANITIZER_NETBSD || \
-    SANITIZER_SOLARIS
+    SANITIZER_SOLARIS || SANITIZER_QNX
 
 #include "sanitizer_allocator_internal.h"
 #include "sanitizer_atomic.h"
@@ -34,6 +34,17 @@
 
 #include <dlfcn.h>  // for dlsym()
 #include <link.h>
+#if !SANITIZER_QNX
+# include <link.h>
+#else
+  typedef _Ptrdifft ptrdiff_t;
+# include <sys/link.h>
+# if defined(__ARM__)
+  typedef Elf32_Phdr Elf_Phdr;
+# else
+  typedef Elf64_Phdr Elf_Phdr;
+# endif
+#endif
 #include <pthread.h>
 #include <signal.h>
 #include <sys/resource.h>
@@ -76,7 +87,9 @@ struct __sanitizer::linux_dirent {
 #endif
 
 #if !SANITIZER_ANDROID
+#if !SANITIZER_QNX
 #include <elf.h>
+#endif
 #include <unistd.h>
 #endif
 
@@ -506,6 +519,9 @@ static void GetTls(uptr *addr, uptr *size) {
       *addr = (uptr)tcb->tcb_dtv[1];
     }
   }
+#elif SANITIZER_QNX
+  *addr = 0;
+  *size = 0;
 #elif SANITIZER_SOLARIS
   // FIXME
   *addr = 0;
@@ -556,6 +572,7 @@ void GetThreadStackAndTls(bool main, uptr *stk_addr, uptr *stk_size,
 #endif
 }
 
+#if !SANITIZER_QNX
 #if !SANITIZER_FREEBSD
 typedef ElfW(Phdr) Elf_Phdr;
 #elif SANITIZER_WORDSIZE == 32 && __FreeBSD_version <= 902001  // v9.2
@@ -563,13 +580,18 @@ typedef ElfW(Phdr) Elf_Phdr;
 #define dl_phdr_info xdl_phdr_info
 #define dl_iterate_phdr(c, b) xdl_iterate_phdr((c), (b))
 #endif  // !SANITIZER_FREEBSD
+#endif
 
 struct DlIteratePhdrData {
   InternalMmapVectorNoCtor<LoadedModule> *modules;
   bool first;
 };
 
+#if SANITIZER_QNX
+static int dl_iterate_phdr_cb(const dl_phdr_info *info, size_t size, void *arg) {
+#else
 static int dl_iterate_phdr_cb(dl_phdr_info *info, size_t size, void *arg) {
+#endif
   DlIteratePhdrData *data = (DlIteratePhdrData*)arg;
   InternalScopedString module_name(kMaxPathLength);
   if (data->first) {

@@ -13,7 +13,7 @@
 
 #include "sanitizer_platform.h"
 
-#if SANITIZER_LINUX || SANITIZER_MAC
+#if SANITIZER_LINUX || SANITIZER_MAC || SANITIZER_QNX
 // Tests in this file assume that off_t-dependent data structures match the
 // libc ABI. For example, struct dirent here is what readdir() function (as
 // exported from libc) returns, and not the user-facing "dirent", which
@@ -61,7 +61,9 @@
 #include <fstab.h>
 #include <sys/mount.h>
 #include <sys/timeb.h>
+#if !SANITIZER_QNX
 #include <utmpx.h>
+#endif
 #endif
 
 #if SANITIZER_LINUX
@@ -81,6 +83,17 @@
 #include <linux/utsname.h>
 #include <linux/posix_types.h>
 #include <net/if_arp.h>
+#endif
+
+#if SANITIZER_QNX
+# include <sys/mount.h>
+# include <sys/sockio.h>
+# include <sys/socket.h>
+# include <netinet/ip_mroute.h>
+# include <sys/ioctl.h>
+# include <net/if_ether.h>
+# include <signal.h>
+# include <nbutil.h>
 #endif
 
 #if SANITIZER_IOS
@@ -106,7 +119,11 @@ typedef struct user_fpregs elf_fpregset_t;
 
 #if !SANITIZER_ANDROID
 #include <ifaddrs.h>
+#if !SANITIZER_QNX
 #include <sys/ucontext.h>
+#else
+#include <ucontext.h>
+#endif
 #include <wordexp.h>
 #endif
 
@@ -274,7 +291,7 @@ namespace __sanitizer {
 #if !SANITIZER_MAC && !SANITIZER_FREEBSD
   unsigned struct_utmp_sz = sizeof(struct utmp);
 #endif
-#if !SANITIZER_ANDROID
+#if !SANITIZER_ANDROID && !SANITIZER_QNX
   unsigned struct_utmpx_sz = sizeof(struct utmpx);
 #endif
 
@@ -510,9 +527,13 @@ unsigned struct_ElfW_Phdr_sz = sizeof(Elf_Phdr);
   unsigned IOCTL_SIOCSIFMTU = SIOCSIFMTU;
   unsigned IOCTL_SIOCSIFNETMASK = SIOCSIFNETMASK;
   unsigned IOCTL_SIOCSPGRP = SIOCSPGRP;
+#if !SANITIZER_QNX
   unsigned IOCTL_TIOCCONS = TIOCCONS;
+#endif
   unsigned IOCTL_TIOCEXCL = TIOCEXCL;
+#if !SANITIZER_QNX
   unsigned IOCTL_TIOCGETD = TIOCGETD;
+#endif
   unsigned IOCTL_TIOCGPGRP = TIOCGPGRP;
   unsigned IOCTL_TIOCGWINSZ = TIOCGWINSZ;
   unsigned IOCTL_TIOCMBIC = TIOCMBIC;
@@ -524,7 +545,9 @@ unsigned struct_ElfW_Phdr_sz = sizeof(Elf_Phdr);
   unsigned IOCTL_TIOCOUTQ = TIOCOUTQ;
   unsigned IOCTL_TIOCPKT = TIOCPKT;
   unsigned IOCTL_TIOCSCTTY = TIOCSCTTY;
+#if !SANITIZER_QNX
   unsigned IOCTL_TIOCSETD = TIOCSETD;
+#endif
   unsigned IOCTL_TIOCSPGRP = TIOCSPGRP;
   unsigned IOCTL_TIOCSTI = TIOCSTI;
   unsigned IOCTL_TIOCSWINSZ = TIOCSWINSZ;
@@ -976,7 +999,6 @@ CHECK_SIZE_AND_OFFSET(addrinfo, ai_flags);
 CHECK_SIZE_AND_OFFSET(addrinfo, ai_family);
 CHECK_SIZE_AND_OFFSET(addrinfo, ai_socktype);
 CHECK_SIZE_AND_OFFSET(addrinfo, ai_protocol);
-CHECK_SIZE_AND_OFFSET(addrinfo, ai_protocol);
 CHECK_SIZE_AND_OFFSET(addrinfo, ai_addrlen);
 CHECK_SIZE_AND_OFFSET(addrinfo, ai_canonname);
 CHECK_SIZE_AND_OFFSET(addrinfo, ai_addr);
@@ -1016,7 +1038,7 @@ COMPILER_CHECK(sizeof(__sanitizer_dirent) <= sizeof(dirent));
 CHECK_SIZE_AND_OFFSET(dirent, d_ino);
 #if SANITIZER_MAC
 CHECK_SIZE_AND_OFFSET(dirent, d_seekoff);
-#elif SANITIZER_FREEBSD
+#elif SANITIZER_FREEBSD || SANITIZER_QNX
 // There is no 'd_off' field on FreeBSD.
 #else
 CHECK_SIZE_AND_OFFSET(dirent, d_off);

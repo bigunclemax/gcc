@@ -14,7 +14,7 @@
 
 #include "sanitizer_platform.h"
 #if SANITIZER_FREEBSD || SANITIZER_LINUX || SANITIZER_NETBSD ||                \
-    SANITIZER_SOLARIS
+    SANITIZER_SOLARIS || SANITIZER_QNX
 #include "sanitizer_common.h"
 #include "sanitizer_internal_defs.h"
 #include "sanitizer_platform_limits_freebsd.h"
@@ -25,6 +25,10 @@
 
 struct link_map;  // Opaque type returned by dlopen().
 struct utsname;
+#if SANITIZER_QNX
+#include <pthread.h>
+int pthread_getattr_np(pthread_t thread, pthread_attr_t *attr);
+#endif
 
 namespace __sanitizer {
 // Dirent structure for getdents(). Note that this structure is different from

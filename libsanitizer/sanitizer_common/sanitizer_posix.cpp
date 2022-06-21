@@ -27,7 +27,7 @@
 #include <signal.h>
 #include <sys/mman.h>
 
-#if SANITIZER_FREEBSD
+#if SANITIZER_FREEBSD || SANITIZER_QNX
 // The MAP_NORESERVE define has been removed in FreeBSD 11.x, and even before
 // that, it was never implemented.  So just define it to zero.
 #undef  MAP_NORESERVE
@@ -153,7 +153,7 @@ void MprotectMallocZones(void *addr, int prot) {}
 fd_t OpenFile(const char *filename, FileAccessMode mode, error_t *errno_p) {
   if (ShouldMockFailureToOpen(filename))
     return kInvalidFd;
-  int flags;
+  int flags=0;
   switch (mode) {
     case RdOnly: flags = O_RDONLY; break;
     case WrOnly: flags = O_WRONLY | O_CREAT | O_TRUNC; break;

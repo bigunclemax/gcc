@@ -12,7 +12,7 @@
 //===----------------------------------------------------------------------===//
 
 #if SANITIZER_LINUX || SANITIZER_FREEBSD || SANITIZER_NETBSD || \
-    SANITIZER_SOLARIS
+    SANITIZER_SOLARIS || SANITIZER_QNX
 
 #if !defined(INCLUDED_FROM_INTERCEPTION_LIB)
 # error "interception_linux.h should be included from interception library only"
@@ -50,4 +50,4 @@ bool InterceptFunction(const char *name, const char *ver, uptr *ptr_to_real,
 
 #endif  // INTERCEPTION_LINUX_H
 #endif  // SANITIZER_LINUX || SANITIZER_FREEBSD || SANITIZER_NETBSD ||
-        // SANITIZER_SOLARIS
+        // SANITIZER_SOLARIS || SANITIZER_QNX

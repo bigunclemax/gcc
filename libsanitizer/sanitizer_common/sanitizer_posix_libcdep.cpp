@@ -36,7 +36,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#if SANITIZER_FREEBSD
+#if SANITIZER_FREEBSD || SANITIZER_QNX
 // The MAP_NORESERVE define has been removed in FreeBSD 11.x, and even before
 // that, it was never implemented.  So just define it to zero.
 #undef MAP_NORESERVE
@@ -56,12 +56,15 @@ uptr GetThreadSelf() {
 }
 
 void ReleaseMemoryPagesToOS(uptr beg, uptr end) {
+/* No explicit madvise() on QNX */
+#if !SANITIZER_QNX
   uptr page_size = GetPageSizeCached();
   uptr beg_aligned = RoundUpTo(beg, page_size);
   uptr end_aligned = RoundDownTo(end, page_size);
   if (beg_aligned < end_aligned)
     internal_madvise(beg_aligned, end_aligned - beg_aligned,
                      SANITIZER_MADVISE_DONTNEED);
+#endif
 }
 
 void SetShadowRegionHugePageMode(uptr addr, uptr size) {
@@ -163,7 +166,7 @@ bool SupportsColoredOutput(fd_t fd) {
   return isatty(fd) != 0;
 }
 
-#if !SANITIZER_GO
+#if !SANITIZER_GO && SIGSTKSZ
 // TODO(glider): different tools may require different altstack size.
 static uptr GetAltStackSize() {
   // SIGSTKSZ is not enough.
@@ -285,7 +288,12 @@ bool IsAccessibleMemoryRange(uptr beg, uptr size) {
   int write_errno;
   bool result;
   if (internal_iserror(bytes_written, &write_errno)) {
+#if SANITIZER_QNX
+    // Neutrino doesn't fault but not allow access..
+    CHECK_EQ(EPERM, write_errno);
+#else
     CHECK_EQ(EFAULT, write_errno);
+#endif
     result = false;
   } else {
     result = (bytes_written == size);

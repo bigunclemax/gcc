@@ -14,10 +14,16 @@
 #ifndef SANITIZER_PLATFORM_LIMITS_POSIX_H
 #define SANITIZER_PLATFORM_LIMITS_POSIX_H
 
-#if SANITIZER_LINUX || SANITIZER_MAC
+#if SANITIZER_LINUX || SANITIZER_MAC || SANITIZER_QNX
 
 #include "sanitizer_internal_defs.h"
 #include "sanitizer_platform.h"
+
+#if SANITIZER_QNX
+// needed for ino_t and must be included before opening the namespace,
+// otherwise all QNX specific datatypes are invalid outside.
+#  include <sys/stat.h>
+#endif
 
 #if defined(__sparc__)
 // FIXME: This can't be included from tsan which does not support sparc yet.
@@ -350,6 +356,10 @@ struct __sanitizer_passwd {
   long pw_change;
   char *pw_class;
 #endif
+#if SANITIZER_QNX
+  char  *pw_age;
+  char  *pw_comment;
+#endif
 #if !(SANITIZER_ANDROID && (SANITIZER_WORDSIZE == 32))
   char *pw_gecos;
 #endif
@@ -427,7 +437,7 @@ struct __sanitizer_file_handle {
 };
 #endif
 
-#if SANITIZER_MAC
+#if SANITIZER_MAC || SANITIZER_QNX
 struct __sanitizer_msghdr {
   void *msg_name;
   unsigned msg_namelen;
@@ -473,6 +483,20 @@ struct __sanitizer_dirent {
   unsigned short d_reclen;
   // more fields that we don't care about
 };
+#elif SANITIZER_QNX
+  struct __sanitizer_dirent {
+# if __OFF_BITS__ == 64
+       ino_t                   d_ino;                  /* File serial number.                                  */
+       off_t                   d_offset;
+# elif __OFF_BITS__ == 32
+       ino_t                   d_ino;                  /* File serial number.                                  */
+       ino_t                   d_ino_hi;
+       off_t                   d_offset;
+       off_t                   d_offset_hi;
+# endif
+    _Int16t d_reclen;          /* length of this record */
+    // more fields that we don't care about
+  };
 #elif SANITIZER_ANDROID || defined(__x86_64__)
 struct __sanitizer_dirent {
   unsigned long long d_ino;
@@ -498,13 +522,15 @@ struct __sanitizer_dirent64 {
 };
 #endif
 
-#if defined(__x86_64__) && !defined(_LP64)
+#if SANITIZER_QNX
+  typedef unsigned __sanitizer_clock_t;
+#elif defined(__x86_64__) && !defined(_LP64)
 typedef long long __sanitizer_clock_t;
 #else
 typedef long __sanitizer_clock_t;
 #endif
 
-#if SANITIZER_LINUX
+#if SANITIZER_LINUX || SANITIZER_QNX
 typedef int __sanitizer_clockid_t;
 #endif
 
@@ -557,6 +583,11 @@ struct __sanitizer_sigset_t {
   // The size is determined by looking at sizeof of real sigset_t on linux.
   uptr val[128 / sizeof(uptr)];
 };
+#elif SANITIZER_QNX
+  struct __sanitizer_sigset_t {
+     // uint32_t * 2
+     unsigned int __bits[2];
+  };
 #endif
 
 struct __sanitizer_siginfo {
@@ -608,7 +639,7 @@ struct __sanitizer_sigaction {
     __sanitizer_sigactionhandler_ptr sigaction;
     __sanitizer_sighandler_ptr handler;
   };
-#if SANITIZER_FREEBSD
+#if SANITIZER_FREEBSD || SANITIZER_QNX
   int sa_flags;
   __sanitizer_sigset_t sa_mask;
 #else
@@ -715,7 +746,7 @@ struct __sanitizer_addrinfo {
   int ai_family;
   int ai_socktype;
   int ai_protocol;
-#if SANITIZER_ANDROID || SANITIZER_MAC
+#if SANITIZER_ANDROID || SANITIZER_MAC || SANITIZER_QNX
   unsigned ai_addrlen;
   char *ai_canonname;
   void *ai_addr;
@@ -741,7 +772,7 @@ struct __sanitizer_pollfd {
   short revents;
 };
 
-#if SANITIZER_ANDROID || SANITIZER_MAC
+#if SANITIZER_ANDROID || SANITIZER_MAC || SANITIZER_QNX
 typedef unsigned __sanitizer_nfds_t;
 #else
 typedef unsigned long __sanitizer_nfds_t;
@@ -775,6 +806,11 @@ struct __sanitizer_wordexp_t {
   uptr we_wordc;
   char **we_wordv;
   uptr we_offs;
+#if SANITIZER_QNX
+  char *we_strings;
+  uptr we_nbytes;
+#endif
+
 };
 
 #if SANITIZER_LINUX && !SANITIZER_ANDROID
@@ -848,7 +884,11 @@ extern int map_fixed;
 
 // ioctl arguments
 struct __sanitizer_ifconf {
+#if SANITIZER_QNX
+  short ifc_len;
+#else
   int ifc_len;
+#endif
   union {
     void *ifcu_req;
   } ifc_ifcu;

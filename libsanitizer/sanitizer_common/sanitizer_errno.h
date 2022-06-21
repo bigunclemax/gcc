@@ -30,10 +30,14 @@
 #  define __errno_location ___errno
 #elif SANITIZER_WINDOWS
 #  define __errno_location _errno
+#elif SANITIZER_QNX
+#  define __errno_location __get_errno_ptr
 #endif
 
 extern "C" int *__errno_location();
 
+#if SANITIZER_QNX && !defined errno
 #define errno (*__errno_location())
+#endif
 
 #endif  // SANITIZER_ERRNO_H

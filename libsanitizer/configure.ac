@@ -106,7 +106,10 @@ AM_CONDITIONAL(HWASAN_SUPPORTED, [test "x$HWASAN_SUPPORTED" = "xyes"])
 AC_CHECK_FUNCS(clock_getres clock_gettime clock_settime lstat readlink)
 
 # Common libraries that we need to link against for all sanitizer libs.
-link_sanitizer_common='-lpthread -lm'
+case "$host" in
+  *-*-nto*) link_sanitizer_common='-lm' ;;
+  *) link_sanitizer_common='-lpthread -lm' ;;
+esac
 
 # At least for glibc, shm_open is in librt.  But don't pull that
 # in if it still doesn't give us the function we want.  This
