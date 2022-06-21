@@ -26,7 +26,9 @@
 /* This file handles the LOOP (FOR/DO) construct.  */
 
 #include <limits.h>
+#ifndef __QNXNTO__
 #include <stdlib.h>
+#endif
 #include <string.h>
 #include "libgomp.h"
 

@@ -41,6 +41,12 @@
 #define _LIBGOMP_CHECKING_ 0
 #endif
 
+#ifdef __QNXNTO__
+typedef __SIZE_TYPE__  size_t;
+#include <stddef.h>
+#include <wchar.h>
+#endif
+
 #include "config.h"
 #include <stdint.h>
 #include "libgomp-plugin.h"

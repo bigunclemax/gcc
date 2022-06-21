@@ -26,7 +26,9 @@
 
 /* Exported (non-hidden) functions exposing libgomp interface for plugins.  */
 
+#ifndef __QNXNTO__
 #include <stdlib.h>
+#endif
 
 #include "libgomp.h"
 #include "libgomp-plugin.h"
