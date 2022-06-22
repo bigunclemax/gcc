@@ -1,2 +1,3 @@
-softfp_wrap_start := '\#if !__ARM_ARCH_ISA_ARM && __ARM_ARCH_ISA_THUMB == 1'
+softfp_wrap_start := '\#if 1'
 softfp_wrap_end := '\#endif'
+softfp_exclude_libgcc2 := n

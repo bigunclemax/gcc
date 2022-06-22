@@ -67,7 +67,7 @@ typedef int __gcc_CMPtype __attribute__ ((mode (__libgcc_cmp_return__)));
 # define _strong_alias(name, aliasname) \
   extern __typeof (name) aliasname __attribute__ ((alias (#name)));
 
-#ifdef __ARM_EABI__
+#if  0
 /* Rename functions to their EABI names.  */
 /* The comparison functions need wrappers for EABI semantics, so
    leave them unmolested.  */

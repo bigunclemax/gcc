@@ -2539,6 +2539,8 @@ arm_init_libfuncs (void)
 {
   machine_mode mode_iter;
 
+  return;
+
   /* For Linux, we have access to kernel support for atomic operations.  */
   if (arm_abi == ARM_ABI_AAPCS_LINUX)
     init_sync_libfuncs (MAX_SYNC_LIBFUNC_SIZE);

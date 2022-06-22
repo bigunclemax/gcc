@@ -496,6 +496,7 @@ arm*-*-uclinux*)		# ARM ucLinux
 arm*-*-qnx*eabi*)
         tmake_file="${tmake_file} arm/t-arm t-slibgcc arm/t-nto"
         tmake_file="${tmake_file} arm/t-bpabi"
+        tmake_file="${tmake_file} t-softfp-sfdf arm/t-softfp t-softfp"
         tm_file="$tm_file arm/bpabi-lib.h"
         unwind_header=config/arm/unwind-arm.h
         ;;
