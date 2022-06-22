@@ -25,6 +25,7 @@
 #ifndef GCC_LIBGCOV_H
 #define GCC_LIBGCOV_H
 
+#include <stdint.h>
 /* work around the poisoned malloc/calloc in system.h.  */
 #ifndef xmalloc
 #define xmalloc malloc
