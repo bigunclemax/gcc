@@ -2354,6 +2354,7 @@ case $ac_cv_host in
 *-*-*) ;;
 *) as_fn_error $? "invalid value of canonical host" "$LINENO" 5;;
 esac
+ac_cv_host=$host_alias
 host=$ac_cv_host
 ac_save_IFS=$IFS; IFS='-'
 set x $ac_cv_host
