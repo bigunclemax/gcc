@@ -3447,6 +3447,7 @@ else
 fi
 
 fi
+ac_cv_target=$target
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_target" >&5
 $as_echo "$ac_cv_target" >&6; }
 case $ac_cv_target in
