@@ -1,5 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
-
+#define __CORRECT_ISO_CPP_MATH_H_PROTO
 /* Define to 1 if you have the `acosf' function. */
 #undef HAVE_ACOSF
 
