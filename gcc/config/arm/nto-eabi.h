@@ -38,29 +38,17 @@ do {                                            \
  %{mapcs-float:-mfloat} \
  -meabi=5" 
 
-#define QNX_SYSTEM_LIBDIRS \
-"-L %$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/lib/gcc/%v1.%v2.%v3 \
- -L %$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/lib \
- -L %$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/usr/lib \
- -L %$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/opt/lib \
- -rpath-link %$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/lib/gcc/%v1.%v2.%v3:\
-%$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/lib:\
-%$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/usr/lib:\
-%$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/opt/lib "
-
 #undef LINK_LIBGCC_SPEC
 #define LINK_LIBGCC_SPEC \
-  "%D " \
-  QNX_SYSTEM_LIBDIRS
+  "%D "
 
 #undef STARTFILE_SPEC
 #define STARTFILE_SPEC \
-"%{!shared: %$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/lib/%{pg|p:mcrt1.o;:crt1%{" PIE_SPEC ":S}.o} } \
-%$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/lib/crti.o crtbegin.o%s "
+"%{!shared: %{pg|p:mcrt1.o;:crt1%{pie:S}.o}%s } crti.o%s crtbegin.o%s "
 
 #undef ENDFILE_SPEC
 #define ENDFILE_SPEC \
-"crtend.o%s %$QNX_TARGET/arm%{EB:be}%{!EB:le}-v7/lib/crtn.o"
+"crtend.o%s crtn.o%s"
 
 #undef LINK_SPEC
 #define LINK_SPEC \

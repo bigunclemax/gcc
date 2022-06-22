@@ -22,31 +22,9 @@ Boston, MA 02110-1301, USA.  */
 #undef TARGET_NEUTRINO
 #define TARGET_NEUTRINO 1
 
-/**
-    tooldir_base_prefix = concat (qnx_host, "/usr/", NULL); \
-**/
-#undef GCC_DRIVER_HOST_INITIALIZATION
-#define GCC_DRIVER_HOST_INITIALIZATION \
-do { \
-    const char *qnx_host = env.get ("QNX_HOST"); \
-    const char *qnx_target = env.get ("QNX_TARGET"); \
-    if (qnx_host == NULL && qnx_target == NULL) \
-      fatal_error (input_location, "error: environment variables QNX_HOST and QNX_TARGET not defined"); \
-    if (qnx_host == NULL) \
-      fatal_error (input_location, "error: environment variable QNX_HOST not defined"); \
-    if (qnx_target == NULL) \
-      fatal_error (input_location, "error: environment variable QNX_TARGET not defined"); \
-    standard_libexec_prefix = concat (qnx_host, "/usr/lib/gcc/", NULL); \
-    standard_exec_prefix = concat (qnx_host, "/usr/lib/gcc/", NULL); \
-    standard_startfile_prefix = concat (qnx_host, "/usr/lib/", NULL); \
-    standard_bindir_prefix = concat (qnx_host, "/usr/bin/", NULL); \
-    add_prefix (&exec_prefixes, standard_bindir_prefix, NULL, PREFIX_PRIORITY_LAST, 0, 0); \
-} while (0)
-
 #define QNX_SYSTEM_INCLUDES \
 "%{!nostdinc: \
--isystem %$QNX_HOST/usr/lib/gcc/" DEFAULT_TARGET_MACHINE "/%v1.%v2.%v3/include \
--isysroot %$QNX_TARGET/}"
+}"
 
 #if QNX_ENABLE_RELRO
 #define QNX_RELRO_SPEC "-zrelro -znow"
@@ -71,23 +49,14 @@ do { \
 CPP_SPEC \
 "%{!nostdinc++: \
 %{stdlib=libcpp|stdlib=libcpp-ne: \
- -isystem %$QNX_TARGET/usr/include/cpp/c/ \
- -isystem %$QNX_TARGET/usr/include/cpp \
 } \
 %{stdlib=libcpp-ne: -D_NO_EX } \
 %{stdlib=libc++" NTO_EXTRA_LIBCXX_SPEC ": \
- -isystem %$QNX_TARGET/usr/include/c++/v1 \
 } \
 %{stdlib=libstdc++" NTO_EXTRA_LIBSTDCXX_SPEC ": \
- -isystem %$QNX_TARGET/usr/include/c++/%v1.%v2.%v3 \
- -isystem %$QNX_TARGET/usr/include/c++/%v1.%v2.%v3/" DEFAULT_TARGET_MACHINE " \
- -isystem %$QNX_TARGET/usr/include/c++/%v1.%v2.%v3/backward \
 } \
 }" 
 
-/* Don't assume anything about the header files.  */
-#undef NO_IMPLICIT_EXTERN_C
-#define NO_IMPLICIT_EXTERN_C
 
 /* Allow stabs and dwarf, and make dwarf the default for Neutrino */
 #undef PREFERRED_DEBUGGING_TYPE
