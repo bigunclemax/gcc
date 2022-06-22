@@ -134,6 +134,11 @@ extern char *alloca ();
 # define INT_MAX       (int)(((unsigned int) ~0) >> 1)          /* 0x7FFFFFFF */ 
 #endif
 
+#ifdef __QNXNTO__
+#include <wchar.h>
+#include <stdlib.h>
+#endif
+
 #include "ansidecl.h"
 #include "libiberty.h"
 #include "demangle.h"
