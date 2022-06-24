@@ -184,7 +184,7 @@ typedef __PTRDIFF_TYPE__ ptrdiff_t;
 #define _SYS_SIZE_T_H
 #define _T_SIZE_
 #define _T_SIZE
-#define __SIZE_T
+#define __SIZE_T _Sizet
 #define _SIZE_T_
 #define _BSD_SIZE_T_
 #define _SIZE_T_DEFINED_
@@ -262,7 +262,7 @@ typedef long ssize_t;
 #define _WCHAR_T
 #define _T_WCHAR_
 #define _T_WCHAR
-#define __WCHAR_T
+#define __WCHAR_T wchar_t
 #define _WCHAR_T_
 #define _BSD_WCHAR_T_
 #define _WCHAR_T_DEFINED_
