@@ -133,11 +133,6 @@ do {                                            \
 #define LINK_EH_SPEC "%{!static:--eh-frame-hdr} "
 #endif
 
-/* Remove the default C++ headers so we can select via -stdlib */
-#undef GPLUSPLUS_INCLUDE_DIR
-#undef GPLUSPLUS_TOOL_INCLUDE_DIR
-#undef GPLUSPLUS_BACKWARD_INCLUDE_DIR
-
 /* Define LIBSTDCXX so we can select the implementation based on -stdlib */
 struct cl_decoded_option;
 extern const char *nto_select_libstdcxx(struct cl_decoded_option* options, unsigned int options_count);
